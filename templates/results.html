@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <div class="container pt-5">
+        <div class="row">
+
+        <h1>Prediction Results</h1>
+
+            <table class="table">
+                <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">fixed_acidity</th>
+                <th scope="col">volatile_acidity</th>
+                <th scope="col">citric_acid</th>
+                <th scope="col">residual_sugar</th>
+                    <th scope="col">chlorides</th>
+                    <th scope="col">free_sulfur_dioxide</th>
+                    <th scope="col">total_sulfur_dioxide</th>
+                    <th scope="col">density</th>
+                    <th scope="col">pH</th>
+                    <th scope="col">sulphates</th>
+                    <th scope="col">alcohol</th>
+                <th scope="col">Prediction</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for data in dataset %}
+                    <tr>
+                    <th scope="row">{{ data.id }}</th>
+                    <td>{{ data.fixed_acidity }}</td>
+                    <td>{{ data.volatile_acidity }}</td>
+                    <td>{{ data.citric_acid }}</td>
+                    <td>{{ data.residual_sugar }}</td>
+                        <td>{{ data.chlorides }}</td>
+                        <td>{{ data.free_sulfur_dioxide }}</td>
+                        <td>{{ data.total_sulfur_dioxide }}</td>
+                        <td>{{ data.density }}</td>
+                        <td>{{ data.pH }}</td>
+                        <td>{{ data.sulphates }}</td>
+                        <td>{{ data.alcohol }}</td>
+                    <td>{{ data.regression }}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block main %}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Prediction Results</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Prediction Input:</h5>
+                <div>fixed_acidity: <span id="fa"></span></div>
+                <div>volatile_acidity: <span id="va"></span></div>
+                <div>citric_acid: <span id="ca"></span></div>
+                <div>residual_sugar: <span id="rs"></span></div>
+                <div>Chlorides: <span id="ch"></span></div>
+                <div>free_sulfur_dioxide: <span id="fs"></span></div>
+                 <div>total_sulfur_dioxide: <span id="ts"></span></div>
+                 <div>density: <span id="de"></span></div>
+                 <div>pH: <span id="ph"></span></div>
+                 <div>sulphates: <span id="su"></span></div>
+                 <div>alcohol: <span id="al"></span></div>
+                <h5 class="pt-3">Predicted quality:</h5>
+                <div id="prediction"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a class="btn btn-primary" href="/results" role="button">View DB</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pt-5">
+    <div class="row justify-content-md-center">
+        <div class="col-md-4">
+            <h1>Wine quality Prediction</h1>
+            <form action="" id="post-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="fixed_acidity">Fixed acidity</label>
+                    <input type="number" step="0.0001" class="form-control" id="fixed_acidity" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="volatile_acidity">Volatile acidity</label>
+                    <input type="number" step="0.0001" class="form-control" id="volatile_acidity" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="citric_acid">Citric acid</label>
+                    <input type="number" step="0.0001" class="form-control" id="citric_acid" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="residual_sugar">Residual sugar</label>
+                    <input type="number" step="0.0001" class="form-control" id="residual_sugar" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="chlorides">Chlorides</label>
+                    <input type="number" step="0.0001" class="form-control" id="chlorides" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="free_sulfur_dioxide">Free sulfur dioxide</label>
+                    <input type="number" step="0.0001" class="form-control" id="free_sulfur_dioxide" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="total_sulfur_dioxide">Total sulfur dioxide</label>
+                    <input type="number" step="0.0001" class="form-control" id="total_sulfur_dioxide" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="density">Density</label>
+                    <input type="number" step="0.000001" class="form-control" id="density" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="pH">pH</label>
+                    <input type="number" step="0.0001" class="form-control" id="pH1" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="sulphates">Sulphates</label>
+                    <input type="number" step="0.0001" class="form-control" id="sulphates" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="alcohol">Alcohol</label>
+                    <input type="number" step="0.0001" class="form-control" id="alcohol" placeholder="" required>
+                </div>
+                <button type="submit" value="Submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).on('submit', '#post-form',function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:'{% url "predict:submit_prediction" %}',
+            data:{
+                fixed_acidity:$('#fixed_acidity').val(),
+                volatile_acidity:$('#volatile_acidity').val(),
+                citric_acid:$('#citric_acid').val(),
+                residual_sugar:$('#residual_sugar').val(),
+                chlorides:$('#chlorides').val(),
+                free_sulfur_dioxide:$('#free_sulfur_dioxide').val(),
+                total_sulfur_dioxide:$('#total_sulfur_dioxide').val(),
+                density:$('#density').val(),
+                pH:$('#pH1').val(),
+                sulphates:$('#sulphates').val(),
+                alcohol:$('#alcohol').val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+            },
+            success:function(json) {
+                document.forms["post-form"].reset();
+                document.getElementById("prediction").innerHTML = json['result']
+                document.getElementById("fa").innerHTML = json['fixed_acidity']
+                document.getElementById("va").innerHTML = json['volatile_acidity']
+                document.getElementById("ca").innerHTML = json['citric_acid']
+                document.getElementById("rs").innerHTML = json['residual_sugar']
+                document.getElementById("ch").innerHTML = json['chlorides']
+                document.getElementById("fs").innerHTML = json['free_sulfur_dioxide']
+                document.getElementById("ts").innerHTML = json['total_sulfur_dioxide']
+                document.getElementById("de").innerHTML = json['density']
+                document.getElementById("ph").innerHTML = json['pH']
+                document.getElementById("su").innerHTML = json['sulphates']
+                document.getElementById("al").innerHTML = json['alcohol']
+            },
+            error : function(xhr,errmsg,err) {
+
+            }
+        });
+    })
+</script>
+
+{% endblock %}
+
+
